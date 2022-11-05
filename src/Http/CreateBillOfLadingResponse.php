@@ -1,10 +1,10 @@
 <?php
 
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 use Carbon\Carbon;
 use Omniship\Common\Bill\Create;
-use Omniship\Evropat\Client;
+use Omniship\Glovo\Client;
 
 class CreateBillOfLadingResponse extends AbstractResponse
 {
@@ -17,17 +17,13 @@ class CreateBillOfLadingResponse extends AbstractResponse
      */
     public function getData()
     {
-        if(!empty($this->getMessage()) || empty($this->data->response)){
+        if(!empty($this->getMessage())){
             return null;
         }
 
-        $client = (new Client($this->getRequest()->getParameter('api_key')));
-        $pdf = $client->getPdf($this->data->response[0], 'A4');
         $data = $this->data;
         $result = new Create();
-        $result->setBolId($this->data->response[0]);
-        $result->setBillOfLadingSource($pdf->response);
-        $result->setBillOfLadingType($result::PDF);
+        $result->setBolId($data->id.' - '.$data->code);
         return $result;
     }
 

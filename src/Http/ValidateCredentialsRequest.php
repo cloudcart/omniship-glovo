@@ -1,7 +1,7 @@
 <?php
 
-namespace Omniship\Evropat\Http;
-use Omniship\Evropat\Client;
+namespace Omniship\Glovo\Http;
+use Omniship\Glovo\Client;
 
 
 class ValidateCredentialsRequest extends AbstractRequest
@@ -18,9 +18,11 @@ class ValidateCredentialsRequest extends AbstractRequest
      */
     public function sendData($data)
     {
-        $params = $this->parameters->all();
-        $services = (new Client($params['api_key']));
-        $services = $services->SendRequest('POST', 'testclientkey', ['clientKey' => $params['api_key']]);
+        $publicKey = $this->getParameter('public_key', $this->getPublicKey());
+        $privateKey = $this->getParameter('private_key', $this->getPrivateKey());
+
+        $services = (new Client($publicKey, $privateKey));
+        $services = $services->SendRequest('GET', 'b2b/working-areas');
         return $this->createResponse($services);
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 class ValidateCredentialsResponse extends AbstractResponse
 {
@@ -11,7 +11,7 @@ class ValidateCredentialsResponse extends AbstractResponse
     public function getData()
     {
         if($this->data){
-            return $this->data->response;
+            return true;
         }
         return false;
     }

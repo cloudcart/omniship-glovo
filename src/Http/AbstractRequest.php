@@ -1,6 +1,6 @@
 <?php
 
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 use Omniship\Interfaces\RequestInterface;
 use Omniship\Message\AbstractRequest as BaseAbstractRequest;
@@ -19,13 +19,33 @@ abstract class AbstractRequest extends BaseAbstractRequest implements RequestInt
         return $this->setParameter('base_url', $value);
     }
 
+    public function setPublicKey($value)
+    {
+        return $this->setParameter('public_key', $value);
+    }
 
     /**
      * @return mixed
      */
-    public function getApiKey()
+    public function getPublicKey()
     {
-        return $this->getParameter('api_key');
+        return $this->getParameter('public_key');
+    }
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function setPrivateKey($value){
+        return $this->setParameter('private_key', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivateKey()
+    {
+        return $this->getParameter('private_key');
     }
 
 
@@ -37,15 +57,6 @@ abstract class AbstractRequest extends BaseAbstractRequest implements RequestInt
     public function getMoneyTransfer()
     {
         return $this->getParameter('money_transfer');
-    }
-
-    /**
-     * @param $value
-     * @return $this
-     */
-    public function setApiKey($value)
-    {
-        return $this->setParameter('api_key', $value);
     }
 
     abstract protected function createResponse($data);

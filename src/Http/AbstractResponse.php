@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 use Omniship\Evropat\Client;
 use Omniship\Message\AbstractResponse AS BaseAbstractResponse;
@@ -33,8 +33,8 @@ class AbstractResponse extends BaseAbstractResponse
     {
         $message = null;
         $data = $this->data;
-        if(!empty($data->error)){
-            $message = $data->errorMessage;
+        if(is_array($data) && !empty($data['error'])){
+            $message = $data['error'];
         }
         return $message;
     }
@@ -44,8 +44,9 @@ class AbstractResponse extends BaseAbstractResponse
      */
     public function getCode()
     {
-        if($this->getMessage() != null){
-            return 400;
+        $data = $this->data;
+        if(is_array($data) && !empty($data['error']) && $data['code'] != 200){
+            return $data['code'];
         }
         return null;
     }
@@ -57,11 +58,4 @@ class AbstractResponse extends BaseAbstractResponse
     {
         return $this->getRequest()->getClient();
     }
-
-    /**
-     * @param mixed $client
-     * @return AbstractResponse
-     */
-
-
 }

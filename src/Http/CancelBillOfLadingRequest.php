@@ -1,8 +1,8 @@
 <?php
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 
-use Omniship\Evropat\Client;
+use Omniship\Glovo\Client;
 
 class CancelBillOfLadingRequest extends AbstractRequest
 {
@@ -11,7 +11,8 @@ class CancelBillOfLadingRequest extends AbstractRequest
      * @return array
      */
     public function getData() {
-        return $this->getBolId();
+        $explodeId = explode(' - ', $this->getBolId());
+        return $explodeId[0];
     }
 
     /**
@@ -21,8 +22,8 @@ class CancelBillOfLadingRequest extends AbstractRequest
     public function sendData($data)
     {
         $params = $this->parameters->all();
-        $services = (new Client($params['api_key']));
-        return $this->createResponse($services->SendRequest('POST', 'cancelshipment', ['clientKey' => $params['api_key'], 'shipmentBarcode' => $params['bol_id']]));
+        $client = (new Client($this->getPublicKey(), $this->getPrivateKey()));
+        return $this->createResponse($client->SendRequest('POST', '/b2b/orders/'.$data.'/cancel'));
     }
 
 

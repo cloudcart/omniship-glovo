@@ -1,5 +1,5 @@
 <?php
-namespace Omniship\Evropat\Http;
+namespace Omniship\Glovo\Http;
 
 class CancelBillOfLadingResponse extends AbstractResponse
 {

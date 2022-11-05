@@ -3,19 +3,18 @@
 namespace Omniship\Glovo;
 
 use Omniship\Common\AbstractGateway;
-use Omniship\Evropat\Client;
-use Omniship\Evropat\Http\CancelBillOfLadingRequest;
-use Omniship\Evropat\Http\CreateBillOfLadingRequest;
-use Omniship\Evropat\Http\GetPdfRequest;
-use Omniship\Evropat\Http\ShippingQuoteRequest;
-use Omniship\Evropat\Http\ValidateCredentialsRequest;
+use Omniship\Glovo\Client;
+use Omniship\Glovo\Http\CancelBillOfLadingRequest;
+use Omniship\Glovo\Http\CreateBillOfLadingRequest;
+use Omniship\Glovo\Http\ShippingQuoteRequest;
+use Omniship\Glovo\Http\ValidateCredentialsRequest;
 
 class Gateway extends AbstractGateway
 {
 
     private $name = 'Glovo';
     protected $client;
-    const TRACKING_URL = 'https://evropat.bg/track/';
+    const TRACKING_URL = '';
 
     /**
      * @return stringc
@@ -41,16 +40,42 @@ class Gateway extends AbstractGateway
     public function getDefaultParameters()
     {
         return array(
-            'api_key' => '',
+            'public_key' => '',
+            'private_key' => '',
         );
     }
 
-    public function getApiKey() {
-        return $this->getParameter('api_key');
+    /**
+     * @return mixed
+     */
+    public function getPublicKey()
+    {
+        return $this->getParameter('public_key');
     }
 
-    public function setApiKey($value) {
-        return $this->setParameter('api_key', $value);
+    /**
+     * @param $value
+     * @return Gateway
+     */
+    public function setPublicKey($value)
+    {
+        return $this->setParameter('public_key', $value);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPrivateKey()
+    {
+        return $this->getParameter('private_key');
+    }
+
+    /**
+     * @return Gateway
+     */
+    public function setPrivateKey($value)
+    {
+        return $this->setParameter('private_key', $value);
     }
 
 
@@ -65,7 +90,7 @@ class Gateway extends AbstractGateway
     public function getClient()
     {
         if (is_null($this->client)) {
-            $this->client = new Client($this->getApiKey());
+            $this->client = new Client($this->getPublicKey(), $this->getPrivateKey());
         }
 
         return $this->client;
@@ -80,7 +105,8 @@ class Gateway extends AbstractGateway
         return $this->setParameter('endpoint', $value);
     }
 
-    public function supportsValidateCredentials(){
+    public function supportsValidateCredentials()
+    {
         return true;
     }
 
@@ -93,20 +119,22 @@ class Gateway extends AbstractGateway
 
     public function getQuotes($parameters = [])
     {
-        if($parameters instanceof ShippingQuoteRequest) {
+        if ($parameters instanceof ShippingQuoteRequest) {
             return $parameters;
         }
-        if(!is_array($parameters)) {
+        if (!is_array($parameters)) {
             $parameters = [];
         }
         return $this->createRequest(ShippingQuoteRequest::class, $this->getParameters() + $parameters);
     }
+
     public function supportsCashOnDelivery()
     {
         return true;
     }
 
-    public function supportsCreateBillOfLading(){
+    public function supportsCreateBillOfLading()
+    {
         return true;
     }
 
@@ -130,6 +158,7 @@ class Gateway extends AbstractGateway
     {
         return sprintf(static::TRACKING_URL, $parcel_id);
     }
+
     public function cancelBillOfLading($bol_id, $cancelComment = null)
     {
         $this->setBolId($bol_id);
